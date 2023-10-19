@@ -1,0 +1,28 @@
+class RotatePreProcessSides(PreProcessStep):
+    """Rotate image by an angle clockwise and anti-clockwise"""
+
+    rotate_angle: int 
+
+    def execute(
+        self, image: np.ndarray, meta: ImageMeta, image_logger: BaseImageLogger
+    ) -> Tuple[np.ndarray, Dict]:
+        step_context = {}
+        image_center = tuple(np.array(image.shape[1::-1]) / 2)
+
+        if meta.side_mode == Sides.LHS:
+            rot_mat = cv2.getRotationMatrix2D(image_center, self.rotate_angle, 1.0)
+        elif meta.side_mode == Sides.RHS:
+            rot_mat = cv2.getRotationMatrix2D(image_center, -self.rotate_angle, 1.0)
+        
+        
+        image = cv2.warpAffine(
+            image, rot_mat, image.shape[1::-1], flags=cv2.INTER_LINEAR
+        )
+        image_logger.log(
+            image=image,
+            meta=meta,
+            image_preprocess_stage=f"rotated",
+            logger_name=f"rotated",
+        )
+
+        return image, step_context
