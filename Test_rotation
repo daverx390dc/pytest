@@ -1,0 +1,19 @@
+def test_image_rotation(angle):
+    # Load an example image for testing
+    image = cv2.imread("img.jpg")  # Replace "example.jpg" with the path to your image
+    
+    # Ensure the image was loaded successfully
+    assert image is not None
+    
+    # Rotate the image
+    rotated_image = rotate_image(image, angle)
+    
+    # Check if the rotated image has the same dimensions as the original
+    assert rotated_image.shape == image.shape
+    
+    # Check if the rotated image is not identical to the original
+    assert not np.array_equal(rotated_image, image)
+
+# Run the tests
+if __name__ == '__main__':
+    pytest.main()
